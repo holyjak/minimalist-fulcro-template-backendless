@@ -1,0 +1,5 @@
+;; OPTIONAL - for running the app via babashka tasks instead of manually
+{:tasks 
+ {serve (clojure "-M:serve")
+  serve-emacs (clojure "-M:serve:cider")}
+}
