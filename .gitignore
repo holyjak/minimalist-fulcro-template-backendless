@@ -16,3 +16,4 @@
 .clj-kondo/.cache/
 .shadow-cljs/
 resources/public/js/
+node_modules/

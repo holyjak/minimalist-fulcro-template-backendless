@@ -1,0 +1,17 @@
+image:
+  file: .gitpod.Dockerfile
+
+ports:
+  - port: 9631
+    onOpen: open-browser
+  - port: 8000
+    onOpen: open-preview
+
+vscode:
+  extensions:
+    - betterthantomorrow.calva
+
+tasks:
+  - name: Prepare deps
+    init: clojure -P -Sdeps '{:deps {nrepl/nrepl {:mvn/version,"0.8.3"},cider/cider-nrepl {:mvn/version,"0.26.0"}}}'
+  - init: npm i
