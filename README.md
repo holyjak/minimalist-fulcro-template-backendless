@@ -14,6 +14,8 @@ You will run shadow-cljs, which will watch, compile, and update the sources and 
 
 ## Usage
 
+Prerequisites: Java and [Clojure CLI](https://clojure.org/guides/getting_started#_clojure_installer_and_cli_tools) installed.
+
 First, install frontend dependencies via npm, yarn, or similar:
 
     npm install # or yarn install
@@ -41,6 +43,10 @@ and then serve the whole website using a HTTP server, e.g.:
 
     cd resources/public/
     python3 -m http.server 8000
+
+## Why is this not suitable for production?
+
+No thought was given to security, performance, monitoring, error tracking and other important production concerns. So if you want to use the template as a starting point for a production application, you will need to add those yourself.
 
 ## License
 
