@@ -10,6 +10,7 @@
                        :release    {:compiler-options {:source-map true}}
                        :modules    {:main {:init-fn com.example.client/init}}
                        :devtools   {:preloads   [shadow.remote.runtime.cljs.browser ; Shadow Inspect tab support
+                                                 holyjak.fulcro-troubleshooting ; optional, to find mistakes faster
                                                  com.fulcrologic.fulcro.inspect.preload
                                                  com.fulcrologic.fulcro.inspect.dom-picker-preload]
                                     :after-load com.example.client/refresh}}

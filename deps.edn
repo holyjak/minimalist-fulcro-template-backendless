@@ -5,18 +5,17 @@
         com.fulcrologic/fulcro {:git/url "https://github.com/fulcrologic/fulcro"
                                 :sha "c840483be0c635825b47b8f6434c98de093bf83c" ; 3.5.2 + more
                                 #_#_:tag "3.5.3"}
-        com.wsscode/pathom     {:mvn/version "2.3.1"}}
+        com.wsscode/pathom     {:mvn/version "2.3.1"}
+        ;; For simplicity, we include this dev dependency here:
+        holyjak/fulcro-troubleshooting {:git/url "https://github.com/holyjak/fulcro-troubleshooting"
+                                        ;; run `clojure -X:deps git-resolve-tags` to insert the correct :sha
+                                        :sha "943e632d076d83d70f828887b079a53ea06bb83d"
+                                        :tag "latest"}}
  :aliases
  {:serve {:jvm-opts    ["-XX:-OmitStackTraceInFastThrow"]
           :main-opts ["-m" "shadow.cljs.devtools.cli" "watch" "main"]
           :extra-deps {thheller/shadow-cljs                {:mvn/version "2.14.5"}
-                       binaryage/devtools                  {:mvn/version "1.0.0"}
-                       ;; Extra dev dependencies; for simplicty not under a separate profile:
-                       holyjak/fulcro-troubleshooting
-                       {:git/url "https://github.com/holyjak/fulcro-troubleshooting"
-                        ;; run `clojure -X:deps git-resolve-tags` to insert the correct :sha
-                        :sha "943e632d076d83d70f828887b079a53ea06bb83d"
-                        :tag "latest"}}}
+                       binaryage/devtools                  {:mvn/version "1.0.0"}}}
   :build {:extra-deps {thheller/shadow-cljs {:mvn/version "2.14.5"}}
           :main-opts ["-m" "shadow.cljs.devtools.cli" "release" "main"]}
   ;; Activate if you want to `M-x cider-connect-cljs` from Emacs:
