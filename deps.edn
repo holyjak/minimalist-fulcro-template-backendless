@@ -21,6 +21,8 @@
   ;; Activate if you want to `M-x cider-connect-cljs` from Emacs:
   :cider {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.9"}           ; must be added for M-x cider-connect-cljs
                        cider/piggieback {:mvn/version "0.5.1"}}}
+  :shadow-cljs {:extra-deps {thheller/shadow-cljs                {:mvn/version "2.14.5"}
+                             binaryage/devtools                  {:mvn/version "1.0.0"}}}
   
 ;;   :run-m {:main-opts ["-m" "cz.holyjak.minimalist-fulcro-template-backendless"]}
 ;;   :run-x {:ns-default cz.holyjak.minimalist-fulcro-template-backendless
