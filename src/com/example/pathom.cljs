@@ -16,9 +16,26 @@
        (update ::pc/index-resolvers #(into {} (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into {} (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(def my-resolvers 
+(pc/defresolver i-fail 
+  [_ _]
+  {::pc/input  #{}
+   ::pc/output [:i-fail]}
+  (throw (ex-info "Fake resolver error" {})))
+
+(pc/defmutation create-random-thing [env {:keys [tmpid] :as params}]
+  ;; Fake generating a new server-side entity with
+  ;; a server-decided actual ID
+  ;; NOTE: To match with the Fulcro-sent mutation, we
+  ;; need to explicitly name it to use the same symbol
+  {::pc/sym 'com.example.mutations/create-random-thing
+   ::pc/params [:tempid]
+   ::pc/output [:tempids]}
+  (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
+  {:tempids {tmpid 123}})
+
+(def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer])
+  [index-explorer create-random-thing i-fail])
 
 (defn new-parser 
   "Create a new Pathom parser with the necessary settings"
@@ -26,9 +43,10 @@
   (p/parallel-parser
     {::p/env     {::p/reader [p/map-reader
                               pc/parallel-reader
-                              pc/open-ident-reader]}
+                              pc/open-ident-reader]
+                  ::pc/mutation-join-globals [:tempids]}
      ::p/mutate  pc/mutate-async
-     ::p/plugins [(pc/connect-plugin {::pc/register my-resolvers})
+     ::p/plugins [(pc/connect-plugin {::pc/register my-resolvers-and-mutations})
                   p/error-handler-plugin
                   p/request-cache-plugin
                   (p/post-process-parser-plugin p/elide-not-found)]}))

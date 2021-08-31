@@ -18,7 +18,7 @@ Prerequisites: Java and [Clojure CLI](https://clojure.org/guides/getting_started
 
 First, install frontend dependencies via npm, yarn, or similar:
 
-    npm install # or yarn install
+    npm install # or yarn install # reportedly yarn < v3
 
 then start the application either via
 
@@ -46,7 +46,11 @@ and then serve the whole website using a HTTP server, e.g.:
 
 ## Why is this not suitable for production?
 
-No thought was given to security, performance, monitoring, error tracking and other important production concerns. So if you want to use the template as a starting point for a production application, you will need to add those yourself.
+No thought was given to security, performance, monitoring, error tracking and other important production concerns. It also bakes in fulcro-troubleshooting, which you do not want unnecessarily increasing your bundle size in production settings. So if you want to use the template as a starting point for a production application, you will need to add those yourself.
+
+## TODO
+
+* Can we display an error in the UI when we remove the `i-fail` resolver from Pathom? Currently it returns `::p/errors ::p/not-found`, which Fulcro ignores
 
 ## License
 
