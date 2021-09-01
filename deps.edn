@@ -12,15 +12,23 @@
                                         :sha "943e632d076d83d70f828887b079a53ea06bb83d"
                                         :tag "latest"}}
  :aliases
- {:serve {:jvm-opts    ["-XX:-OmitStackTraceInFastThrow"]
-          :main-opts ["-m" "shadow.cljs.devtools.cli" "watch" "main"]
-          :extra-deps {thheller/shadow-cljs                {:mvn/version "2.14.5"}
-                       binaryage/devtools                  {:mvn/version "1.0.0"}}}
-  :build {:extra-deps {thheller/shadow-cljs {:mvn/version "2.14.5"}}
-          :main-opts ["-m" "shadow.cljs.devtools.cli" "release" "main"]}
-  ;; Activate if you want to `M-x cider-connect-cljs` from Emacs:
-  :cider {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.9"}           ; must be added for M-x cider-connect-cljs
-                       cider/piggieback {:mvn/version "0.5.1"}}}
+ {:dev {:extra-deps {thheller/shadow-cljs                {:mvn/version "2.15.5"}
+                     binaryage/devtools                  {:mvn/version "1.0.0"}
+                     ;; Emacs requirements for M-x cider-connect-cljs:
+                     cider/cider-nrepl {:mvn/version "0.26.0"}
+                     ;; FIXME: Do we really need piggieback for Emacs?!
+                     cider/piggieback {:mvn/version "0.5.1"}}}
+;; NOTE: Running shadow via clojure -M:... does not work well with Calva's Jack-in,
+;;   since it wants to set its own main opts so we use `npx ...` instead of this:
+;;   :serve {:jvm-opts    ["-XX:-OmitStackTraceInFastThrow"]
+;;           :main-opts ["-m" "shadow.cljs.devtools.cli" "watch" "main"]
+;;           :extra-deps {thheller/shadow-cljs                {:mvn/version "2.15.5"}
+;;                        binaryage/devtools                  {:mvn/version "1.0.0"}}}
+;;   :build {:extra-deps {thheller/shadow-cljs {:mvn/version "2.15.5"}}
+;;           :main-opts ["-m" "shadow.cljs.devtools.cli" "release" "main"]}
+;;   ;; Activate if you want to `M-x cider-connect-cljs` from Emacs:
+;;   :cider {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.9"}           ; must be added for M-x cider-connect-cljs
+;;                        cider/piggieback {:mvn/version "0.5.1"}}}
   
 ;;   :run-m {:main-opts ["-m" "cz.holyjak.minimalist-fulcro-template-backendless"]}
 ;;   :run-x {:ns-default cz.holyjak.minimalist-fulcro-template-backendless

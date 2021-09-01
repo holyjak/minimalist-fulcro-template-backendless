@@ -1,5 +1,8 @@
 ;; OPTIONAL - for running the app via babashka tasks instead of manually
 {:tasks 
- {serve (clojure "-M:serve")
-  serve-emacs (clojure "-M:serve:cider")}
-}
+ {:requires ([babashka.fs :as fs])
+  npm-inst (when-not (fs/directory? "node_modules")
+             (println "INFO: node_modules/ not found, running install...")
+             (shell "npm install"))
+  run {:depends [npm-inst], :task (shell "npx shadow-cljs watch main")}
+  build {:depends [npm-inst], :task (shell "npx shadow-cljs release main")}}}

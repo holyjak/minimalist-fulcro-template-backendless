@@ -6,7 +6,7 @@ For a template that has an actual backend, see [minimalist-fulcro-template](http
 
 ## Creating a new application from the template
 
-[Download](FIXME) or clone this repository to your computer and start hacking away.
+[Download](https://github.com/holyjak/minimalist-fulcro-template-backendless/archive/refs/heads/main.zip) or clone this repository to your computer and start hacking away.
 
 ## Explanation
 
@@ -14,7 +14,7 @@ You will run shadow-cljs, which will watch, compile, and update the sources and 
 
 ## Usage
 
-Prerequisites: Java and [Clojure CLI](https://clojure.org/guides/getting_started#_clojure_installer_and_cli_tools) installed.
+Prerequisites: [same as shadow-cljs'](https://github.com/thheller/shadow-cljs#requirements).
 
 First, install frontend dependencies via npm, yarn, or similar:
 
@@ -22,22 +22,22 @@ First, install frontend dependencies via npm, yarn, or similar:
 
 then start the application either via
 
-    clojure -M:serve # or `-M:serve:cider` if you use Emacs
-    
+    npx shadow-cljs watch main
 
 or, if you have [Babashka](https://babashka.org/) installed, via
 
-    bb serve # or `serve-emacs`
+    bb run
+
+NOTE: For Calva, do instead start the REPL from the editor - [run Jack-in](https://calva.io/connect/#jack-in-let-calva-start-the-repl-for-you), selecting _shadow-cljs_ then the `:main` build. Remember to load the page in the browser, see below.
 
 Finally, navigate to http://localhost:8000 and, _after that_, connect to the shadow-cljs nREPL at port 9001\* and switch to the browser REPL by evaluating `(shadow/repl :main)` (Calva does the latter for you).
-
-\*) In Calva: run _Calva: Connect to a Running REPL Server in tour Project_, select _shadow-cljs_, and confirm the port.
 
 ### Create a standalone build
 
 You can also compile the sources into a directory via
 
-    clj -M:build
+    npx shadow-cljs release main
+    # or: bb build
 
 and then serve the whole website using a HTTP server, e.g.:
 

@@ -1,2 +1,3 @@
 {:config-paths ["com.wsscode/async"
-                "com.wsscode/pathom"]}
+                "com.wsscode/pathom"
+		"com.fulcrologic/fulcro"]}
