@@ -14,12 +14,13 @@
          transmit! (:transmit! (mock-http-server {:parser (fn [req] (parser env req))}))]
      {:transmit! (fn [this send-node]
                    (js/setTimeout ; simulate some network delay, for fun
-                    #(transmit! this send-node
+                    #(transmit! this
                                 (update send-node
                                         ::txn/result-handler
                                         (fn [handler]
-                                          (fn logging-wrapper [res] (println "MOCK SERVER RESULT>" res)
-                                            (handler res)))))
+                                          (fn logging-wrapper [res] 
+                                            (println "MOCK SERVER RESULT> " res)
+                                            (when handler (handler res))))))
                     100))}))
   ([]
    (mock-remote {})))

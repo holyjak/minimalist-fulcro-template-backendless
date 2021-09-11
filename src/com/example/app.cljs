@@ -6,6 +6,7 @@
 
 (defn global-eql-transform
   [ast]
+  (println "global-eql-transform: AST = " ast)
   (-> ast
       (app/default-global-eql-transform)
       ;; Make sure that if Pathom sends ::p/errors, Fulcro does not remove it:

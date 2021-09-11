@@ -33,14 +33,21 @@
   (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
   {:tempids {tmpid 123}})
 
+(pc/defmutation failing-mut [_ _]
+  {::pc/sym 'com.example.mutations/failing-mut}
+  (throw (ex-info "The failing mutation always fails" {:doomed? true})))
+
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer create-random-thing i-fail])
+  [index-explorer i-fail 
+   create-random-thing failing-mut])
 
 (defn new-parser 
   "Create a new Pathom parser with the necessary settings"
   []
-  (p/parallel-parser
+  ;; NOTE: By default use `parser` in Clojure and `async-parser` in the 1-threaded JS
+  ;;       (so that you can call e.g. js/fetch and return its result via core.async)
+  (p/async-parser 
     {::p/env     {::p/reader [p/map-reader
                               pc/parallel-reader
                               pc/open-ident-reader]
