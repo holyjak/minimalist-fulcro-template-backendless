@@ -1,4 +1,4 @@
-# Advanced Minimalist Fulcro Tutorial: Example 
+# Advanced Minimalist Fulcro Tutorial: Example "Bare essentials of Fulcro routing"
 
 ## Usage
 
