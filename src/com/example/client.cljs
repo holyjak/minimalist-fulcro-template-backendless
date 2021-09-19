@@ -10,12 +10,7 @@
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"
   []
   (println "Initializing the app...")
-  (app/set-root! app ui/Root {:initialize-state? true})
-  (dr/initialize! app) ; make ready, if you want to use dynamic routing...
-  (app/mount! app
-              (app/root-class app)
-              "app"
-              {:initialize-state? false}))
+  (ui/init app))
 
 (defn ^:export refresh 
   "Called by shadow-cljs upon hot code reload, see shadow-cljs.edn"
