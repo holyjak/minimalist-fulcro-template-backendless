@@ -22,12 +22,12 @@
    ::pc/output [:i-fail]}
   (throw (ex-info "Fake resolver error" {})))
 
-(pc/defmutation create-random-thing [env {:keys [tmpid] :as params}]
+(pc/defmutation unused [env {:keys [tmpid] :as params}]
   ;; Fake generating a new server-side entity with
   ;; a server-decided actual ID
   ;; NOTE: To match with the Fulcro-sent mutation, we
   ;; need to explicitly name it to use the same symbol
-  {::pc/sym 'com.example.mutations/create-random-thing
+  {::pc/sym 'com.example.mutations/unused
    ::pc/params [:tempid]
    ::pc/output [:tempids]}
   (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
@@ -35,7 +35,7 @@
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer create-random-thing i-fail])
+  [index-explorer unused i-fail])
 
 (defn new-parser 
   "Create a new Pathom parser with the necessary settings"

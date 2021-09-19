@@ -7,7 +7,7 @@
   (:require
    [com.fulcrologic.fulcro.mutations :refer [defmutation]]))
 
-(defmutation create-random-thing [{:keys [tmpid]}]
+(defmutation unused [{:keys [tmpid]}]
   (action [{:keys [state] :as env}]
-          (swap! state assoc-in [:new-thing tmpid] {:id tmpid, :txt "A new thing!"}))
+          state)
   (remote [_] true))
