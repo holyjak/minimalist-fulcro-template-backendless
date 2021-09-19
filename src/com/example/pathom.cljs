@@ -4,7 +4,8 @@
    Add your resolvers and 'server-side' mutations here."
   (:require
     [com.wsscode.pathom.core :as p]
-    [com.wsscode.pathom.connect :as pc]))
+    [com.wsscode.pathom.connect :as pc]
+    [cljs.core.async :as async :refer [go <!]]))
 
 (pc/defresolver index-explorer 
   "This resolver is necessary to make it possible to use 'Load index' in Fulcro Inspect - EQL"
@@ -16,33 +17,26 @@
        (update ::pc/index-resolvers #(into {} (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into {} (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(pc/defresolver i-fail 
-  [_ _]
-  {::pc/input  #{}
-   ::pc/output [:i-fail]}
-  (throw (ex-info "Fake resolver error" {})))
-
-(pc/defmutation create-random-thing [env {:keys [tmpid] :as params}]
-  ;; Fake generating a new server-side entity with
-  ;; a server-decided actual ID
-  ;; NOTE: To match with the Fulcro-sent mutation, we
-  ;; need to explicitly name it to use the same symbol
-  {::pc/sym 'com.example.mutations/create-random-thing
-   ::pc/params [:tempid]
-   ::pc/output [:tempids]}
-  (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
-  {:tempids {tmpid 123}})
+(pc/defresolver person
+  [_ {:person/keys [id] :as params}]
+  {::pc/input  #{:person/id}
+   ::pc/output [:person/id :person/name :person/biography]}
+  #_(throw (ex-info "Fake error" {}))
+  (go
+    (<! (async/timeout 3000))
+    (println "Returning delayed...")
+    #:person{:id id :name "Doubravka" :biography "A princess born in the 10th century..."}))
 
 (def my-resolvers-and-mutations 
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer create-random-thing i-fail])
+  [index-explorer person])
 
 (defn new-parser 
   "Create a new Pathom parser with the necessary settings"
   []
-  (p/parallel-parser
+  (p/async-parser
     {::p/env     {::p/reader [p/map-reader
-                              pc/parallel-reader
+                              pc/async-reader2
                               pc/open-ident-reader]
                   ::pc/mutation-join-globals [:tempids]}
      ::p/mutate  pc/mutate-async
