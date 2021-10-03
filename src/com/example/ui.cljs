@@ -11,7 +11,8 @@
     [com.fulcrologic.fulcro.data-fetch :as df]    
     [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-    [com.fulcrologic.fulcro.application :as app]))
+    [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.fulcro.ui-state-machines :as uism]))
 
 (defsc DefaultTarget [_ _]
   {:ident (fn [] [:component/id ::DefaultTarget])
@@ -27,16 +28,12 @@
    :route-segment ["alt"]}
   (dom/p "AltTarget"))
 
-(dr/defrouter PersonDetailsRouter [_ {:keys [current-state route-factory route-props] :as props}]
+(dr/defrouter PersonDetailsRouter [this {:keys [current-state route-factory route-props] :as props}]
   {:router-targets [DefaultTarget AltTarget]
    :always-render-body? true}
   ;; The body of the router is displayed only when the target is not ready,
   ;; i.e. in one of the states below (unless you set `:always-render-body?`)
   (println "ROUTE STATE" current-state (js/Date.))
-  (dom/div {:style {:border "blue dashed 1px"}}
-    "Router:"
-    (dom/pre (str "state=" current-state ", props= " (pr-str props))))
-  #_
   (case current-state
     nil (println "MISTAKE: PersonDetailsRouter is displayed but has never been routed to yet")
     :pending (dom/div "Router: Loading...")
@@ -55,7 +52,7 @@
   (dom/div {:style {:border "black solid 2px"}}
     (dom/p (str "Person #" id ": ") (dom/strong name) " - " biography)
     ;(dom/pre "router props: " (pr-str router))
-    (ui-person-details-router nil #_router)))
+    (ui-person-details-router router)))
 
 (def ui-person (comp/factory Person))
 
