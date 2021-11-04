@@ -1,0 +1,12 @@
+@startuml "Entities"
+entity Task {
+    time-worked
+    from: Date, to: Date
+}
+entity Sprint {
+    from: Date, to: Date
+}
+Project }o-- Task
+Sprint }o-- Task
+Task }o-- Tag
+@enduml
