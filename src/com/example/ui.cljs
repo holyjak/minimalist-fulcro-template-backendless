@@ -1,10 +1,10 @@
 (ns com.example.ui
-  "# Data modeling in Fulcro
+  "# Data modelling in Fulcro
    
    ## UI
    
-   * Left - list Sprints, Tasks, Uncategorized, ...
-   * Middle - details of selected => *Details => union | dynamic | all@every-t
+   * Left = Menu, i.e. a list of: Today, Uncategorized, Projects [prj1, prj2, ..], Tags [tag1, tag2, ...]
+   * Middle - details of the selected menu item
    * Right - Calendar 
    "
   (:require
@@ -18,8 +18,6 @@
    [com.fulcrologic.fulcro.raw.components :as rc]
    [com.fulcrologic.fulcro.data-fetch :as df]
    [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]))
-
-(defsc FIXME [_ _] {})
 
 (defn ui-sublist [{:keys [items key label]} {:keys [list-selected]}]
   (dom/div label

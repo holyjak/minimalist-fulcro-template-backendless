@@ -35,3 +35,11 @@ TIP: It might be easier not to worry about data loading at first, just assume th
    *** MenuItemDetails
    ** Calendar
 3. Other options: Use union queries / dynamic queries so we only query for the details we need...
+
+### Decision
+
+The simplest is to use 1.1, i.e. most of the data is directly under Root, b/c that corresponds most closely to the natural way to structure the data entities.
+
+But the UI needs more structure - e.g. put projects and tags under Menu, all-tasks under TaskList. We leverage Pathom's placeholders (`:>/arbitrary-made-up-key`) to introduce the extra level of structure. (If we create the data on the frontend, we need to introduce this artificial structure ourselves.)
+
+To load the data from Pathom, we might either load them individually and in parallel or make convenience grouping resolvers, e.g. `{:task/filters {:tags [..] :projects [..]}` - we would then need to adjust the UI accordingly or use data targeting / custom post-mutation to relocate the data where we want them. (In this case the simplest is to modify Menu to query for the whole `:task/filters` and pluck tags and projects from that.)
