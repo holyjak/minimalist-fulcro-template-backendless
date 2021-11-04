@@ -38,7 +38,7 @@ TIP: It might be easier not to worry about data loading at first, just assume th
 
 ### Decision
 
-The simplest is to use 1.1, i.e. most of the data is directly under Root, b/c that corresponds most closely to the natural way to structure the data entities.
+The simplest is to use 1.a, i.e. most of the data is directly under Root, b/c that corresponds most closely to the natural way to structure the data entities.
 
 But the UI needs more structure - e.g. put projects and tags under Menu, all-tasks under TaskList. We leverage Pathom's placeholders (`:>/arbitrary-made-up-key`) to introduce the extra level of structure. (If we create the data on the frontend, we need to introduce this artificial structure ourselves.)
 
