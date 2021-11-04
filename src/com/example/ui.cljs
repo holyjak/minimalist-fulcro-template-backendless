@@ -72,9 +72,9 @@
     (println "select-list:" selected-list)
     (swap! state assoc :selected-list selected-list)))
 
-(defsc Root [this {:keys [>/menu >/task-list selected-list today user calendar]}]
+(defsc Root [this {:keys [task-filters >/task-list selected-list today user calendar]}]
   {:query [:selected-list 
-           {:>/menu (comp/get-query Menu)}
+           {:task-filters (comp/get-query Menu)}
            {:>/task-list (comp/get-query TaskList)}
            {:today (comp/get-query Today)}
            :user 
@@ -82,7 +82,7 @@
    :initial-state
    (fn [_]
      {:selected-list :today
-      :>/menu ; Pathom would add this itself but in init. state we must add it manually
+      :task-filters ; Pathom would add this itself but in init. state we must add it manually
       {:projects ["KosmoTimeApp"  "Private Stuff" "Kid's Stuff" "Private Works"]
        :tags ["Important" "Urgent" "2" "3" "4"]}
       :>/task-list ; Pathom would add this itself but in init. state we must add it manually
@@ -107,7 +107,7 @@
         (dom/tr {:style {:verticalAlign "top"}}
           (dom/td
             (dom/h2 "Left Pane")
-            (ui-menu menu {:list-selected #(comp/transact! this [(select-list {:selected-list %})])}))
+            (ui-menu task-filters {:list-selected #(comp/transact! this [(select-list {:selected-list %})])}))
           (dom/td
             (dom/h2 "Middle")
             (cond
