@@ -7,39 +7,107 @@ image::./TodoAppInspiration.png[Target UI]
 ## Analysis questions
 
 1. What is the shape of the UI? => LeftPane with SprintsListItem etc., MiddlePane with SprintsListDetails, ...
-2. What are the data entities and graph? => Sprints (with both detail and list item attributes), ...
+2. What are the data points, data entities and data graph? => Sprints (with both detail and list item attributes), ...
 3. How do they map to each other and how to express it with Fulcro idents, queries, and extra graph edges? +
    => You might need to add extra _edges_ and structure on top of the data entities to make them fit your UI.
 4. What server-side resolvers do we have / need? Related to how we want to load the data - all at once, piecemeal, or on-demand (w.r.t. the details).
 +
 TIP: It might be easier not to worry about data loading at first, just assume the data entities the UI needs have been loaded somehow.
 
-## Possible defsc structuring
+### My analysis log
 
-1. All are siblings (b/c that is the UI we want)
+#### 1. UI
+The top-level components we have in the design are a left-side _Menu_, a _Menu Item Details_ in the middle, and a _Calendar_ on the right.
+
+#### 2. Data points
+Looking at the design, I can identify the following top-level data points:
+
+* _project names_
+* _tag names_
+* _user_ (name + icon)
+* _today_ (sprints = list of tasks, tasks = list of tasks)
+* the items of the left menu (today, uncategorized, ..) could possibly be data but I opt for the simple case and assume that they are fixed and hard-coded
+* I assume there is also a _tasks_ list or lookup, to be used when you select a project or a tag in the menu
+* ...
+
+You could wonder why I do not have a _Menu_ data entity with the _project names_ and _tag names_ attributes. That is because to me, the menu is a purely UI construct. Projects and tags are data but the fact that we decide to show them in the left menu is just a design choice.
+
+#### 3. Structuring the _data_
+
+How do the data points and entities identified above fit together?
+
+In this case I do not see any natural extra structuring, so I end up with this bag of data:
+
+```clojure
+{:projects [..]
+ :tags [..], 
+ :today {:sprints [..], :tasks [..]}
+ :user {:name ".." :icon ".."}
+ :all-tasks [..]}
+```
+
+#### 4. Fitting the data to the UI components
+
+In the first step I have established the following UI components:
+
+* Root
+  ** Menu <- needs `projects`, `tags`
+  ** Menu Item Details <- needs `today` or `all-tasks`
+  ** Calendar - let's ignore this one for now
+
+There is obviously a mismatch between the flat data from step 3. above and the more structured UI here. However that is not a problem.
+
+.Adapting backend data to the UI component's structure
+****
+We have multiple tools to add extra structure to the data to adapt them to the UI structure:
+
+* When load-ing data, use targeting to change where it is placed or to add any number of extra "edges" to it (using append, prepend, replace)
+* Use `:initial-state` to establish edges between components. For example if we decide to put `:projects` and `:tags` under `:component/id -> :Menu` in the client DB then we also need to make a connection between Root and the Menu component so that Fulcro will be able to find the data when fulfilling the query. Something like:
 +
---
-   * Root
-   ** Menu
-   ** MenuItemDetails (= Today|TaskList)
-   ** Calendar
---
-+
-.. Variant: Root queries directly for individual lists and we use Pathom placeholders to add the extra UI structure for the list item vs details components:
-   `[{:>/sprints-item (get-query SprintsItem)} {:>/sprints-details (get-query SprintsDetails)} ...]` = `[:sprints-list/label, {:sprints-list/sprints [..]}  ...]`
-.. Variant: TODO: ...
-2. Shared parent for selector + detail (similar to 1. but with extra structure to group the two summary-details views):
-   * Root
-   ** TaskLists
-   *** Menu
-   *** MenuItemDetails
-   ** Calendar
-3. Other options: Use union queries / dynamic queries so we only query for the details we need...
+```clojure
+(defsc Menu [_ {:keys [projects tags]}]
+  {:ident (fn [] [:component/id :Menu])
+   :query [:projects :tags]
+   :initial-state {}})         ; <1>
 
-### Decision
+(defsc Root [_ {:keys [menu]}] ; <2>
+  {:query [{:menu (get-query Menu)}] ; <2>
+   :initial-state {:menu {}}}  ; <2>
+  (ui-menu menu))
 
-The simplest is to use 1.a, i.e. most of the data is directly under Root, b/c that corresponds most closely to the natural way to structure the data entities.
+;; Client DB will be (after data has been loaded):
+{:component/id {:Menu {:projects [..] :tags [..]}}
+ :menu [:component/id :Menu]}  ; <3>
+```
+<1> The target component must have a non-nil initial state
+<2> The parent component can pick whatever name it wants for the child's data (here `:menu`) as long it initializes it in its
+`:initial-state` (remember we use its template form here so it is same as `:menu (get-initial-state Menu)`)
+<3> Thanks to the initial state, we get this link from the parent (here Root) to the child and Fulcro will be able to fulfill the query. Notice this edge is arbitrary, using a made-up name (`:menu`), it does not correspond to anything in the backend data. (It took me a while to figure out that I can add such arbitrary edges.)
 
-But the UI needs more structure - e.g. put projects and tags under Menu, all-tasks under TaskList. We leverage Pathom's placeholders (`:>/arbitrary-made-up-key`) to introduce the extra level of structure. (If we create the data on the frontend, we need to introduce this artificial structure ourselves.)
+* Use a custom mutation (perhaps triggered via load!'s `:post-mutation` parameter) to re-shape the client DB in any way you want
+* https://blog.jakubholy.net/2020/fulcro-divergent-ui-data/#_a_data_entity_spread_across_multiple_sibling_components[Use Pathom placeholders] (`:>/any-arbitrary-keyword`) to add an extra level of structure to the backend data (obviously this only works if you load the data from Pathom - if you simulate them locally via initial-state or merge! then you need to add the structure into the data yourself)
+****
 
-To load the data from Pathom, we might either load them individually and in parallel or make convenience grouping resolvers - such as I have done with `{:task-filters {:tags [..] :projects [..]}` (which originally was `:>/menu`). When we do then then we also need to adjust the UI accordingly and/or use data targeting or a custom post-mutation to relocate the data where we want them.
+Thus I will keep the data mostly as it is, directly in the root of the client DB (and thus available for Root to query) but will add extra structure to them:
+
+* Root
+  ** Menu - use Pathom placeholder `:>ui/menu` to "borrow" `:projects` and `:tags` from its Root parent
+  ** Menu Item Details - I will actually implement this directly in the Root for simplicity (otherwise I could use the same trick as with Menu) and thus have a direct access to `today` and `all-tasks`
+
+#### 5. Aside: Implementing behavior  
+
+When you click a menu item, the app needs to change what is displayed in the middle, i.e. either today or a list of task for a project/tag/uncategorized.
+
+The simplest way to implement is a conditional: `if (you clicked Today) then render today else if (you clicked tag X) then render task list for X ...`. Clicking an item in the menu will change the `:selected-list` and the correct details component will be displayed. 
+
+#### 6. Evolution of the implementation
+
+The current implementation differs from the design in 5. Namely:
+
+* I figured it made sense to group projects and tags under `:task-filters` so I did then and replaced the artificial `:>/menu` with the real `:task-filters`.
+* I realized I need to wrap :all-tasks in something so that my TaskList component can query for it and ended up with `:>/task-list`.
+(I don't need that for :today because that its value is a map, which I can pass to Today as-is.)
+
+#### 7. Next steps
+
+Now I would move the data to the backend and start actually loading them. I would consider whether to load them individual and in parallel or whether to introduce some convenience grouping (similarly to what I did with :task-filters) to be able to load more at once (which would require adjustment to the UI or the structure adaptation code).

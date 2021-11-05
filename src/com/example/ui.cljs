@@ -82,7 +82,7 @@
    :initial-state
    (fn [_]
      {:selected-list :today
-      :task-filters ; Pathom would add this itself but in init. state we must add it manually
+      :task-filters
       {:projects ["KosmoTimeApp"  "Private Stuff" "Kid's Stuff" "Private Works"]
        :tags ["Important" "Urgent" "2" "3" "4"]}
       :>/task-list ; Pathom would add this itself but in init. state we must add it manually
