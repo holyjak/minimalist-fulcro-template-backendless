@@ -26,4 +26,8 @@
             "I create!")
     (when-let [things (:new-thing props)]
       (p (str "Created a thing with the ID: " (first (keys things))))))))
-        
+
+(comment
+  ;; Load this => will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
+  ;; even though the resolver returns a lazy seq
+  (df/load! com.example.app/app :sequence (rc/nc [:tst/id :tst/val])))
