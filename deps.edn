@@ -5,7 +5,8 @@
         com.fulcrologic/fulcro {:git/url "https://github.com/fulcrologic/fulcro"
                                 :sha "c840483be0c635825b47b8f6434c98de093bf83c" ; 3.5.2 + more
                                 #_#_:tag "3.5.3"}
-        com.wsscode/pathom     {:mvn/version "2.3.1"}
+        ;com.wsscode/pathom     {:mvn/version "2.3.1"}
+        com.wsscode/pathom3     {:mvn/version "2021.07.10-alpha"}
         ;; For simplicity, we include this dev dependency here:
         holyjak/fulcro-troubleshooting {:git/url "https://github.com/holyjak/fulcro-troubleshooting"
                                         ;; run `clojure -X:deps git-resolve-tags` to insert the correct :sha
