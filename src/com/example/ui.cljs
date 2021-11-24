@@ -28,6 +28,8 @@
       (p (str "Created a thing with the ID: " (first (keys things))))))))
 
 (comment
-  ;; Load this => will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
+  ;; Load this => 
+  ;; Pathom 2: will get back from server {:sequence [{..}, ..]} - i.e. a *vector*
   ;; even though the resolver returns a lazy seq
+  ;; Pathom 3: returns a list: {:sequence ({..}, ..)}
   (df/load! com.example.app/app :sequence (rc/nc [:tst/id :tst/val])))
