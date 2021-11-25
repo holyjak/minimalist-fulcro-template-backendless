@@ -94,7 +94,15 @@
 
 (comment
   (p.eql/process env '[{:i-fail [*]}])
-  
+
+  (p.eql/process
+    (pci/register
+      (pco/resolver 'error
+        {::pco/output [:error]}
+        (fn [_ _]
+          (throw (ex-info "Deu ruim." {})))))
+    [:error])
+
   (p.eql/process
     (-> {:com.wsscode.pathom3.error/lenient-mode? true}
         (pci/register
@@ -102,4 +110,11 @@
             {::pco/output [:error]}
             (fn [_ _]
               (throw (ex-info "Deu ruim." {}))))))
-    [:error ::pcr/attribute-errors ::pcr/mutation-error]))
+    [:error ::pcr/attribute-errors ::pcr/mutation-error])
+  ; => {:com.wsscode.pathom3.connect.runner/attribute-errors 
+  ;     {:com.wsscode.pathom3.connect.runner/attribute-errors 
+  ;     {:com.wsscode.pathom3.error/cause 
+  ;      :com.wsscode.pathom3.error/attribute-unreachable}, 
+  ;      :error {:com.wsscode.pathom3.error/cause :com.wsscode.pathom3.error/node-errors, :com.wsscode.pathom3.error/node-error-details {1 {:com.wsscode.pathom3.error/cause :com.wsscode.pathom3.error/node-exception, :com.wsscode.pathom3.error/exception #error {:message "Deu ruim.", :data {}}}}}, :com.wsscode.pathom3.connect.runner/mutation-error {:com.wsscode.pathom3.error/cause :com.wsscode.pathom3.error/attribute-unreachable}}}
+  
+,)
