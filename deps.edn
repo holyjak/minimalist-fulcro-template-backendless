@@ -1,10 +1,6 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        ;; TODO Change to :mvn/version <the first after 3.5.2>, which include clj-kondo config:
-        ;;com.fulcrologic/fulcro {:mvn/version "3.5.2"}
-        com.fulcrologic/fulcro {:git/url "https://github.com/fulcrologic/fulcro"
-                                :sha "c840483be0c635825b47b8f6434c98de093bf83c" ; 3.5.2 + more
-                                #_#_:tag "3.5.3"}
+        com.fulcrologic/fulcro {:mvn/version "3.5.9"}
         com.wsscode/pathom     {:mvn/version "2.3.1"}
         ;; For simplicity, we include this dev dependency here:
         holyjak/fulcro-troubleshooting {:git/url "https://github.com/holyjak/fulcro-troubleshooting"
