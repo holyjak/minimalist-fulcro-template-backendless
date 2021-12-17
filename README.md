@@ -4,6 +4,10 @@ A template for starting a new, frontend-only Fulcro application with in-browser 
 
 For a template that has an actual backend, see [minimalist-fulcro-template](https://github.com/holyjak/minimalist-fulcro-template).
 
+## Note on Pathom 3
+
+This template uses Pathom 2 but there is essentially complete rewrite in Pathom 3 at the [pathom3 branch](https://github.com/holyjak/minimalist-fulcro-template-backendless/tree/pathom3).
+
 ## Creating a new application from the template
 
 [Download](https://github.com/holyjak/minimalist-fulcro-template-backendless/archive/refs/heads/main.zip) or clone this repository to your computer and start hacking away.
