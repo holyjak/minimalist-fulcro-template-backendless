@@ -36,6 +36,7 @@
   []
   (p/async-parser
     {::p/env     {::p/reader [p/map-reader
+                              p/env-placeholder-reader
                               pc/async-reader2
                               pc/open-ident-reader]
                   ::pc/mutation-join-globals [:tempids]}

@@ -21,47 +21,57 @@
    :route-segment ["default"]}
   (dom/p "DefaultTarget"))
 
-(defsc AltTarget [_ _]
-  {:ident (fn [] [:component/id ::AltTarget])
-   :query ['*]
-   :initial-state {}
-   :route-segment ["alt"]}
-  (dom/p "AltTarget"))
-
-(dr/defrouter PersonDetailsRouter [this {:keys [current-state route-factory route-props] :as props}]
-  {:router-targets [DefaultTarget AltTarget]
-   :always-render-body? true}
-  ;; The body of the router is displayed only when the target is not ready,
-  ;; i.e. in one of the states below (unless you set `:always-render-body?`)
-  (println "ROUTE STATE" current-state (js/Date.))
-  (case current-state
-    nil (println "MISTAKE: PersonDetailsRouter is displayed but has never been routed to yet")
-    :pending (dom/div "Router: Loading...")
-    :failed (dom/div "Router: Failed!") ; Note: There seem to be timing issues in JS and this is sometimes trigger just after 2-3s, not 5s?!
-    :routed (dom/div (str "Router: Routed to: " (:queryid (meta route-factory)))
-              (dom/pre "props: " (pr-str props)))
-    (println "Should never come here:" current-state)))
-
-(def ui-person-details-router (comp/factory PersonDetailsRouter))
-
-(defsc Person [_ {:person/keys [id name biography] router :ui/router}]
+(defsc PersonDetails1 [_ {:person/keys [biography]}]
   {:ident :person/id
-   :query [:person/id :person/name :person/biography {:ui/router (comp/get-query PersonDetailsRouter)}]
-   :initial-state {:ui/router {}}
-   :route-segment ["person" :person-id]}
+   :query [:person/id :person/biography]
+   :initial-state {}
+   :route-segment ["details1"]
+   :will-enter (fn [app params]
+                 (println "PersonDetails1 params" params)
+                 (dr/route-immediate [:person/id (:person/id params)]))}
+  (dom/p "PersonDetails1: bio=" biography))
+
+(def ui-person-details1 (comp/factory PersonDetails1))
+
+;; Store the subroute into the person then route to the target
+(m/defmutation route-to-person-with-subroute [{:keys [ident subroute]}]
+  (action [{:keys [app state]}]
+    (swap! state assoc-in (conj ident :ui/subroute) subroute)
+    (comp/transact! app [(dr/target-ready {:target ident})])))
+
+(defsc Person [this {:person/keys [id name] 
+                     :keys [>/person-details1 ui/subroute] :as props}]
+  {:ident :person/id
+   :query [:person/id :person/name 
+           {:>/person-details1 (comp/get-query PersonDetails1)}
+           :ui/subroute]
+   :initial-state {:>/person-details1 {}}
+   :route-segment ["person" :person-id]
+   :will-enter (fn [app params]
+                 (println "Person params" params)
+                 (let [ident [:person/id (js/parseInt (:person-id params))]]
+                   (dr/route-deferred
+                     ident
+                     #(comp/transact! app [(route-to-person-with-subroute {:ident ident, :subroute (:subroute params)})]))))}
   (dom/div {:style {:border "black solid 2px"}}
-    (dom/p (str "Person #" id ": ") (dom/strong name) " - " biography)
+    (dom/p (str "Person #" id ": ") (dom/strong name))
+    (case subroute
+      "details1" (ui-person-details1 person-details1))
     ;(dom/pre "router props: " (pr-str router))
+    #_
     (ui-person-details-router router)))
 
-(def ui-person (comp/factory Person))
+(dr/defrouter PagesRouter [_ _]
+  {:router-targets [Person]})
 
-(defsc Root [this {:keys [person ui/ready?] :as props}]
-  {:query [:ui/ready? {:person (comp/get-query Person)}]
-   :initial-state {:person {}}}
+(def ui-pages-router (comp/factory PagesRouter))
+
+(defsc Root [_ {:keys [pages-router ui/ready?]}]
+  {:query [:ui/ready? {:pages-router (comp/get-query PagesRouter)}]
+   :initial-state {:pages-router {}}}
   (dom/div
     (if ready?
-      (ui-person person)
+      (ui-pages-router pages-router)
       (dom/p "UI not ready yet..."))))
 
 (m/defmutation set-ui-ready [_]
@@ -71,7 +81,7 @@
 (m/defmutation init-ui [_]
   (action [{:keys [app]}]
     ;; Change route here, after the dr/initialize! transaction finished: 
-    (dr/change-route! app ["alt"])
+    (dr/change-route! app ["person" "123"] {:subroute "details1"})
     ;; Load the data:
     (df/load! app [:person/id 123] Person
       {:target [:person]

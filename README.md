@@ -1,5 +1,12 @@
-# Advanced Minimalist Fulcro Tutorial: Example of using pre-merge to fix a router in a loaded component
+# Experiment: Using routing params to select a sub-component to show
 
+1. We route to a particular Person (w/ :person/id) and a particular sub-view (<-> "subroute") of the person's details, leveraging the extra routing params to communicate which sub-route to display
+2. Inside Person we have a `(case subroute ...)` to display the sub-view of interest
+
+We do not use a nested router inside Person b/c it does not make sense here. All the sub-views show different parts of the person
+and we want to load all their data anyway.
+
+In practice we would parse a URL such as `/page/person/123/details1` into the desired change-route call `(dr/change-route! app ["person" "123"] {:subroute "details1"})`
 ## Usage
 
 Prerequisites: [same as shadow-cljs'](https://github.com/thheller/shadow-cljs#requirements).
