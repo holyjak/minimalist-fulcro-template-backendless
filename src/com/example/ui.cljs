@@ -10,7 +10,8 @@
     [com.fulcrologic.fulcro.data-fetch :as df]    
     [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-    [com.fulcrologic.fulcro.application :as app]))
+    [com.fulcrologic.fulcro.application :as app]
+    [com.fulcrologic.fulcro.ui-state-machines :as uism))
 
 (defsc AllPeople [_ {:keys [all-people]}]
   {:ident (fn [] [:component/id ::AllPeople])
@@ -41,11 +42,16 @@
 
 (defsc Root [this {:ui/keys [router]}]
   {:query [{:ui/router (comp/get-query MyRouter)}]
+   ;:query [{:ui/router (comp/get-query MyRouter)}
+   ;        [::uism/asm-id ::MyRouter]]
    :initial-state {:ui/router {}}}
+  ;(let [router-state (or (uism/get-active-state this ::MyRouter) :initial)]
+  ;  (if (= :initial router-state)
+  ;    (dom/div :.loading "Loading...")
   (dom/div
     (dom/p (dom/button {:onClick #(dr/change-route! this ["all"])} "All")
            (dom/button {:onClick #(dr/change-route! this ["person" "123"])} "Person 123"))
-    (ui-my-router router)))
+    (ui-my-router router))) ;))
 
 (defn init [app]
   ;; Avoid startup async timing issues by pre-initializing things before mount
