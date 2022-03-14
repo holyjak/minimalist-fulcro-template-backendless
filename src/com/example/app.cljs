@@ -1,9 +1,10 @@
 (ns com.example.app
+  #_
   (:require
    [com.example.mock-server :as mock-server]
    [com.fulcrologic.fulcro.application :as app]
    [edn-query-language.core :as eql]))
-
+#_#_
 (defn global-eql-transform
   [ast]
   (-> ast
