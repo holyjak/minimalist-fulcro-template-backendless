@@ -18,8 +18,8 @@
 (def ui-child (comp/factory Child {:keyfn :child/id}))
 
 (defsc ChildrenList [_ {:parent/keys [children]}]
-  {; :ident nil 
-   :query [{:parent/children (comp/get-query Child)}]}
+  {:ident :parent/id
+   :query [:parent/id {:parent/children (comp/get-query Child)}]}
   (div "ChildrenList is:"
     (map #(div {:key (:child/id %)} (ui-child %)) children)))
 
@@ -32,8 +32,7 @@
    :pre-merge (fn [{parent :data-tree}]
                 (-> parent
                     (assoc :artificial/child-list
-                      (select-keys parent [:parent/children]))
-                    (dissoc :parent/children)))}
+                      (select-keys parent [:parent/id]))))}
   (div "I am the terrible" name "!"
     (ui-child-list (:artificial/child-list props))))
 
