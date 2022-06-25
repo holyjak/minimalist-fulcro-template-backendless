@@ -17,23 +17,25 @@
 
 (def ui-child (comp/factory Child {:keyfn :child/id}))
 
-;; UI-only, stateless list component
-(defsc ChildrenList [this _]
-  {}
+(defsc ChildrenList [_ {:parent/keys [children]}]
+  {; :ident nil 
+   :query [{:parent/children (comp/get-query Child)}]}
   (div "ChildrenList is:"
-    ;; Notice we copy the `:keyfn`-provided unique key to the div
-    ;; of each of the list elements, as React requires
-    (map #(div  {:key (.-key %)} %)
-      (comp/children this))))
+    (map #(div {:key (:child/id %)} (ui-child %)) children)))
 
 (def ui-child-list (comp/factory ChildrenList))
 
-(defsc Parent [_ {:parent/keys [name children]}]
+(defsc Parent [_ {:parent/keys [name] :as props}]
   {:ident :parent/id
    :query [:parent/id :parent/name
-           {:parent/children (comp/get-query Child)}]} ; <1>
+           {:artificial/child-list (comp/get-query ChildrenList)}]
+   :pre-merge (fn [{parent :data-tree}]
+                (-> parent
+                    (assoc :artificial/child-list
+                      (select-keys parent [:parent/children]))
+                    (dissoc :parent/children)))}
   (div "I am the terrible" name "!"
-    (ui-child-list {} (map ui-child children))))
+    (ui-child-list (:artificial/child-list props))))
 
 (def ui-parent (comp/factory Parent))
 
