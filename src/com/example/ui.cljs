@@ -11,7 +11,7 @@
     [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]))
 
 (defsc Root [this props]
-  {:query [[df/marker-table :load-progress] :new-thing]}
+  {:query [[df/marker-table :load-progress] :new-thing :thing/list]}
   (div
    (p "Hello from the ui/Root component!")
    (div {:style {:border "1px dashed", :margin "1em", :padding "1em"}}
@@ -25,5 +25,11 @@
                          (comp/transact! this [(mut/create-random-thing {:tmpid tmpid})]))}
             "I create!")
     (when-let [things (:new-thing props)]
-      (p (str "Created a thing with the ID: " (first (keys things))))))))
+      (p (str "Created a thing with the ID: " (first (keys things))))))
+    (div {:style {:border "1px dashed", :margin "1em", :padding "1em"}}
+      (p "Invoke a load! of a *list* of things:")
+      (if-let [things (seq (:thing/list props))]
+        (dom/pre (pr-str things))
+        (p "Not loaded yet"))
+      (button {:onClick #(df/load! this :thing/list (rc/nc '[:thing/id :thing/name]))} "Load things"))))
         

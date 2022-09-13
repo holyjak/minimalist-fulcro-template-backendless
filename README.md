@@ -1,5 +1,9 @@
 # minimalist-fulcro-template-backendless
 
+Demo of a Pathom resolver returning a lazy list in Fulcro 3.5.25 - despite expectations this works and the data does not disappear. Perhaps b/c no actual network transfer and Transit is involved?
+
+## Intro
+
 A template for starting a new, frontend-only Fulcro application with in-browser Pathom. Intended for playing with and learning Fulcro, not for production apps, and therefore simpler than the official [fulcro-template](https://github.com/fulcrologic/fulcro-template). It is a good starting point for your learning projects that is hopefully simple enough for you to understand.
 
 ~For a template that has an actual backend, see [minimalist-fulcro-template](https://github.com/holyjak/minimalist-fulcro-template).~

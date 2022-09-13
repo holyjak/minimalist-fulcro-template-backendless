@@ -28,6 +28,12 @@
    ::pc/output [:person/id :person/name]}
   {:person/id id, :person/name (str "Joe #" id)})
 
+(pc/defresolver things
+  [_ _]
+  {::pc/input  #{}
+   ::pc/output [:thing/list]}
+  {:thing/list (map identity [#:thing{:id 1 :name "One"} #:thing{:id 2 :name "Two"}])})
+
 (pc/defmutation create-random-thing [env {:keys [tmpid] :as params}]
   ;; Fake generating a new server-side entity with
   ;; a server-decided actual ID
@@ -41,7 +47,7 @@
 
 (def my-resolvers-and-mutations
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer create-random-thing i-fail person])
+  [index-explorer create-random-thing i-fail person things])
 
 (defn new-parser
   "Create a new Pathom parser with the necessary settings"
