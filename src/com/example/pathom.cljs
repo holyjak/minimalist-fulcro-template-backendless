@@ -16,32 +16,15 @@
        (update ::pc/index-resolvers #(into {} (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into {} (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(pc/defresolver i-fail
-  [_ _]
+(pc/defresolver xyz [env _]
   {::pc/input  #{}
-   ::pc/output [:i-fail]}
-  (throw (ex-info "Fake resolver error" {})))
-
-(pc/defresolver person
-  [_ {id :person/id}]
-  {::pc/input  #{:person/id}
-   ::pc/output [:person/id :person/name]}
-  {:person/id id, :person/name (str "Joe #" id)})
-
-(pc/defmutation create-random-thing [env {:keys [tmpid] :as params}]
-  ;; Fake generating a new server-side entity with
-  ;; a server-decided actual ID
-  ;; NOTE: To match with the Fulcro-sent mutation, we
-  ;; need to explicitly name it to use the same symbol
-  {::pc/sym 'com.example.mutations/create-random-thing
-   ::pc/params [:tempid]
-   ::pc/output [:tempids]}
-  (println "SERVER: Simulate creating a new thing with real DB id 123" tmpid)
-  {:tempids {tmpid 123}})
+   ::pc/output [{:all-accounts [:account/id :account/owner :account/balance]}]}
+  {:all-accounts [#:account{:id 1 :owner "Joe" :balance 100}
+                  #:account{:id 2 :owner "Jane" :balance 200}]})
 
 (def my-resolvers-and-mutations
   "Add any resolvers you make to this list (and reload to re-create the parser)"
-  [index-explorer create-random-thing i-fail person])
+  [xyz index-explorer])
 
 (defn new-parser
   "Create a new Pathom parser with the necessary settings"

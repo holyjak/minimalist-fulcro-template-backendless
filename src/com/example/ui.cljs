@@ -10,20 +10,43 @@
     [com.fulcrologic.fulcro.data-fetch :as df]    
     [com.fulcrologic.fulcro.dom :as dom :refer [button div form h1 h2 h3 input label li ol p ul]]))
 
-(defsc Root [this props]
-  {:query [[df/marker-table :load-progress] :new-thing]}
+(defsc Account [_ props]
+  {:ident :account/id
+   :query [:account/id :account/owner :account/balance]}
+  (p (str props)))
+(def ui-account (comp/factory Account))
+
+(defsc AccountList [_ {:account-list/keys [accounts]}]
+ ;; Note: In practice, this would be UI-only comp. with no query
+ ;; and we would put the list of accounts directly under Root
+  {:ident (fn [] [:component/id :AccountList])
+   :query [{:account-list/accounts (comp/get-query Account)}]
+   :initial-state {}}
   (div
-   (p "Hello from the ui/Root component!")
-   (div {:style {:border "1px dashed", :margin "1em", :padding "1em"}}
-    (p "Invoke a load! that fails and display the error:")
-    (when-let [m (get props [df/marker-table :load-progress])]
-      (dom/p "Progress marker: " (str m)))
-    (button {:onClick #(df/load! this :i-fail (rc/nc '[*]) {:marker :load-progress})} "I fail!"))
-   (div {:style {:border "1px dashed", :margin "1em", :padding "1em"}}
-    (p "Simulate creating a new thing with server-assigned ID, leveraging Fulcro's tempid support:")
-    (button {:onClick #(let [tmpid (tempid/tempid)]
-                         (comp/transact! this [(mut/create-random-thing {:tmpid tmpid})]))}
-            "I create!")
-    (when-let [things (:new-thing props)]
-      (p (str "Created a thing with the ID: " (first (keys things))))))))
+   (h2 "Accounts")
+   (map ui-account accounts)))
+(def ui-account-list (comp/factory AccountList))
+
+;; LEFT OUT Customer, CustomerList, their ui-* ;;
+
+(defsc Root [this {:root/keys [accounts]}]
+  {:query [{:root/accounts (comp/get-query AccountList)}
+           #_{:root/customers (comp/get-query CustomerList)}]
+   :initial-state #:root{:accounts {}}}
+  (div
+   (h1 "Your bank")
+   (dom/button {:onClick #(df/load! this :all-accounts Account ;
+                                    {:target (targeting/replace-at [:component/id :AccountList :account-list/accounts])})} "Load!")
+   (ui-account-list accounts)
+   #_(ui-customer-list customers)))
+
+(comment
+  ;; Somewhere during app startup, we would do:
+  (do
+    (df/load! com.example.app/app :all-accounts Account ;
+              {:target (targeting/replace-at [:component/id :AccountList :account-list/accounts])}) ;
+    (df/load! app :all-customers Customer
+              {:target (targeting/replace-at [:component/id :CustomerList :customer-list/customers])}))
+
+  )
         
