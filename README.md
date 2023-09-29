@@ -10,15 +10,13 @@ Until 2023-09 (last sha 624d546e7), we used Pathom 2.
 
 ## Note on alternatives for Pathom 3 and Fulcro Inspect's Index Explorer
 
-Fulcro Inspect's Index Explorer is not compatible with Pathom 3. You need to [use a standalone Pathom Viz](https://blog.jakubholy.net/2023/pathom-viz-for-fulcro-pathom3/).
+Fulcro Inspect's Index Explorer is not compatible with Pathom 3. You need to use a standalone Pathom Viz ([see my article for details](https://blog.jakubholy.net/2023/pathom-viz-for-fulcro-pathom3/).). What you need to do then is to 
 
-If you _do not_ connect Pathom Viz then you will be getting Console messages like
+1. [download Pathom Viz app](https://github.com/wilkerlucio/pathom-viz/releases)
+2. Make `com.example.pathom/enable-pathom-viz` true
+3. Reload your app and connect P. Viz to it
 
-> WARN [taoensso.sente:1422] - Chsk is closed: will try reconnect attempt
-> GET http://localhost:8240/chsk?udt=1696016247331&client-id=com.example.pathom%2Fenv&handshake%3F=true net::ERR_CONNECTION_REFUSED
-> ...
-
-To avoid those, comment out the use of `connect-pathom-viz` in `pathom.cljs`.
+P. Viz support is off by default because otherwise it [logs tons of errors](https://clojurians.slack.com/archives/C87NB2CFN/p1696016550457039) and warnings, until you connect it.
 
 ## Creating a new application from the template
 

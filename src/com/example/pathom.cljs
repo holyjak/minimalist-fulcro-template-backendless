@@ -52,10 +52,13 @@
   "Add any resolvers you make to this list (and reload to re-create the parser)"
   [create-random-thing i-fail person])
 
+(def enable-pathom-viz false)
+
 (defn connect-pathom-viz
   "Expose indices to standalone Pathom-Viz v2022+"
   [env]
-  (try (pathom3-viz-conn/connect-env env {::pvc/parser-id `env})
+  (try (when enable-pathom-viz 
+         (pathom3-viz-conn/connect-env env {::pvc/parser-id `env}))
        (catch :default e
          (println "Failed to enable Pahom-Viz" e)
          env)))
@@ -64,6 +67,7 @@
   (-> {:com.wsscode.pathom3.error/lenient-mode? true}
       (p.plugin/register pbip/mutation-resolve-params) ; needed or not?
       (pci/register my-resolvers-and-mutations)
+      ;; Uncomment the line below to enable Pathom Viz GUI to connect to the app
       connect-pathom-viz))
 
 (defn new-parser "DIY parser" []
