@@ -4,9 +4,21 @@ A template for starting a new, frontend-only Fulcro application with in-browser 
 
 For a template that has an actual backend, see [minimalist-fulcro-template](https://github.com/holyjak/minimalist-fulcro-template).
 
-## Note on Pathom 3
+## Note on Pathom 2
 
-This template uses Pathom 2 but there is essentially complete rewrite in Pathom 3 at the [pathom3 branch](https://github.com/holyjak/minimalist-fulcro-template-backendless/tree/pathom3).
+Until 2023-09 (last sha 624d546e7), we used Pathom 2.
+
+## Note on alternatives for Pathom 3 and Fulcro Inspect's Index Explorer
+
+Fulcro Inspect's Index Explorer is not compatible with Pathom 3. You need to [use a standalone Pathom Viz](https://blog.jakubholy.net/2023/pathom-viz-for-fulcro-pathom3/).
+
+If you _do not_ connect Pathom Viz then you will be getting Console messages like
+
+> WARN [taoensso.sente:1422] - Chsk is closed: will try reconnect attempt
+> GET http://localhost:8240/chsk?udt=1696016247331&client-id=com.example.pathom%2Fenv&handshake%3F=true net::ERR_CONNECTION_REFUSED
+> ...
+
+To avoid those, comment out the use of `connect-pathom-viz` in `pathom.cljs`.
 
 ## Creating a new application from the template
 
@@ -54,7 +66,6 @@ No thought was given to security, performance, monitoring, error tracking and ot
 
 ## TODO
 
-* Make Pathom 3 the default
 * Can we display an error in the UI when we remove the `i-fail` resolver from Pathom? Currently it returns `::p/errors ::p/not-found`, which Fulcro ignores
 
 ## License

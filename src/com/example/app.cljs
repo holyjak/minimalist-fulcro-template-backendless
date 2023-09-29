@@ -10,7 +10,7 @@
   (-> ast
       (app/default-global-eql-transform)
       ;; Make sure that if Pathom sends ::p/errors, Fulcro does not remove it:
-      (update :children conj (eql/expr->ast :com.wsscode.pathom.core/errors))))
+      (update :children conj (eql/expr->ast :com.wsscode.pathom3.connect.runner/attribute-errors))))
 
 (defonce app (-> (app/fulcro-app {:remotes {:remote (mock-server/mock-remote)}
                                   :global-eql-transform global-eql-transform
@@ -18,11 +18,12 @@
                                   (fn [result]
                                     (or
                                      (app/default-remote-error? result)
-                                     (:com.wsscode.pathom.core/errors (:body result))))
+                                     (:com.wsscode.pathom3.connect.runner/attribute-errors (:body result))))
                                   :global-error-action
                                   (fn [{{:keys [body status-code error-text]} :result :as env}]
                                     (println "WARN: Remote call failed"
                                              status-code
                                              error-text
-                                             (:com.wsscode.pathom.core/errors body)))})
+                                             body
+                                             (:com.wsscode.pathom3.connect.runner/attribute-errors body)))})
                  (with-react18)))
