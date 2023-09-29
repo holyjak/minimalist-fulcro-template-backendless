@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "author": "Jakub Holý <jakubholy@jakubholy.net> (https://blog.jakubholy.net)",
   "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
-  "devDependencies": {"shadow-cljs": "2.15.5"}
+  "devDependencies": {"shadow-cljs": "2.25.7"}
 }

@@ -24,3 +24,6 @@
   (comp/refresh-dynamic-queries! app)
   (app/mount! app (app/root-class app) "app"))
 
+(comment
+  
+  )

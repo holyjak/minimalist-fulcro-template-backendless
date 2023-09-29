@@ -54,6 +54,7 @@ No thought was given to security, performance, monitoring, error tracking and ot
 
 ## TODO
 
+* Make Pathom 3 the default
 * Can we display an error in the UI when we remove the `i-fail` resolver from Pathom? Currently it returns `::p/errors ::p/not-found`, which Fulcro ignores
 
 ## License
