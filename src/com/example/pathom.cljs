@@ -57,8 +57,9 @@
 (defn connect-pathom-viz
   "Expose indices to standalone Pathom-Viz v2022+"
   [env]
-  (try (when enable-pathom-viz 
-         (pathom3-viz-conn/connect-env env {::pvc/parser-id `env}))
+  (try (cond-> env
+         enable-pathom-viz
+         (pathom3-viz-conn/connect-env {::pvc/parser-id `env}))
        (catch :default e
          (println "Failed to enable Pahom-Viz" e)
          env)))
