@@ -28,6 +28,8 @@ You will run shadow-cljs, which will watch, compile, and update the sources and 
 
 ## Usage
 
+### Alternative 1: run locally
+
 Prerequisites: [same as shadow-cljs'](https://github.com/thheller/shadow-cljs#requirements).
 
 First, install frontend dependencies via npm, yarn, or similar:
@@ -46,7 +48,7 @@ NOTE: For Calva, do instead start the REPL from the editor - [run Jack-in](https
 
 Finally, navigate to http://localhost:8000 and, _after that_, connect to the shadow-cljs nREPL at port 9001\* and switch to the browser REPL by evaluating `(shadow/repl :main)` (Calva does the latter for you).
 
-### Alternative: VS Code and Dev Containers
+### Alternative 2: Run with VS Code Dev Containers
 
 If you opened the cloned repo in VS Code, it will offer you to open it using Dev Containers,
 i.e. inside a pre-configured Docker instance (provided that you have Docker installed).
@@ -57,6 +59,8 @@ It will take a while (to build the container for the first time). Eventially, a 
 ```
 vscode ➜ /workspaces/minimalist-fulcro-template-backendless (main) $ npx shadow-cljs watch main
 ```
+
+(Or you could just run Calva Jack-in and select shadow-cljs and the :main build.)
 
 Eventually, Code will inform you that "Your application running on port 8000 is available.", which you can agree to. (Ignore the previous message about 9001, that is nrepl). Then wait for the terminal to show `[:main] Build completed.` and reload the web page. You should be now able to _Calva: Connect to a Running REPL Server in the Project_. When asked, select `shadow-cljs` as the kind of the repl and then the `:main` build.
 
