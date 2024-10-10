@@ -3,8 +3,7 @@
    [com.example.app :refer [app]]
    [com.example.ui :as ui]
    [com.fulcrologic.fulcro.application :as app]
-   [com.fulcrologic.fulcro.components :as comp]
-   [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]))
+   [com.fulcrologic.fulcro.components :as comp]))
 
 (defn ^:export init
   "Called by shadow-cljs upon initialization, see shadow-cljs.edn"

@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "author": "Jakub Holý <jakubholy@jakubholy.net> (https://blog.jakubholy.net)",
   "dependencies": {
+    "@js-joda/core": "3.2.0",
+    "@js-joda/timezone": "2.8.0",
+    "big.js": "6.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
-  "devDependencies": {"shadow-cljs": "2.15.5"}
+  "devDependencies": {
+    "shadow-cljs": "2.15.5"
+  }
 }
